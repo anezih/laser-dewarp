@@ -1,4 +1,6 @@
-import cv2, maxflow, numpy
+import cv2
+import maxflow
+import numpy
 from scipy import signal
 
 # Taken from http://wiki.scipy.org/Cookbook/SignalSmooth
@@ -35,10 +37,12 @@ def smooth(x,window_len=11,window='hanning'):
     """
 
     if x.ndim != 1:
-        raise ValueError, "smooth only accepts 1 dimension arrays."
+      print("smooth only accepts 1 dimension arrays.")
+      raise ValueError
 
     if x.size < window_len:
-        raise ValueError, "Input vector needs to be bigger than window size."
+        print("Input vector needs to be bigger than window size.")
+        raise ValueError
 
 
     if window_len<3:
@@ -46,7 +50,8 @@ def smooth(x,window_len=11,window='hanning'):
 
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+        print("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+        raise ValueError
 
 
     s=numpy.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
@@ -73,7 +78,7 @@ def hysteresis(absg, suppress, thi, tlo, allow = None):
   if allow is not None:
     #high = numpy.logical_and(high, allow)
     low = numpy.logical_and(low, allow)
-  for i in xrange(0, len(seedY)):
+  for i in range(0, len(seedY)):
     floodfill(seedX[i], seedY[i], high, low)
   return high
 
@@ -82,8 +87,8 @@ def floodfill(startX, startY, dest, src):
   while len(queue) > 0:
     centerX, centerY = queue[-1]
     queue = queue[:-1]
-    for x in xrange(centerX-1, centerX+2):
-      for y in xrange(centerY-1, centerY+2):
+    for x in range(centerX-1, centerX+2):
+      for y in range(centerY-1, centerY+2):
         if y >= 0 and x >= 0 and y < src.shape[0] and x < src.shape[1] and src[y, x]:
           dest[y, x] = 1
           src[y, x] = 0
@@ -113,7 +118,7 @@ def algorithm1(img, thi=0.5, tlo=0.1, sigma=0.6,
   # compute base binarizations and the stability curve
   bsd = numpy.zeros(len(clist))
   bimg = f(img, thi, tlo, sigma, clist, csearch=csearch, thin=thin)
-  for ic in xrange(1, len(clist)):
+  for ic in range(1, len(clist)):
     bsd[ic-1] = numpy.sum(numpy.not_equal(bimg[ic], bimg[ic-1])) / float(bimg[ic].size)
 
   # smooth stability curve
@@ -124,16 +129,16 @@ def algorithm1(img, thi=0.5, tlo=0.1, sigma=0.6,
 
   r = 0
   scr = None
-  for i in xrange(0, d.size - 2):
-    for j in xrange(i+2, d.size):
-      for k in xrange(i+1, j):
+  for i in range(0, d.size - 2):
+    for j in range(i+2, d.size):
+      for k in range(i+1, j):
         v = d[i] + d[j] - 2*d[k]
         if scr is None or v > scr:
           q = i
           r = k
           s = j
           scr = v
-  print 'algorithm1 ' + str(thi) + ' weighted at ' + str(r) + ': ' + str(clist[r])
+  print(f"algorithm1 {thi} weighted at {r}: {clist[r]}")
   return bimg[r], clist[r]
 
 def algorithm2(img, sigma=0.6, clist=None, tlo=0.1,
@@ -141,7 +146,7 @@ def algorithm2(img, sigma=0.6, clist=None, tlo=0.1,
   diffs = []
   images = []
   previous = f(img, thilist[0], thilist[0]/3.0, sigma, clist, csearch=csearch, thin=thin)[0]
-  for i in xrange(1, iter+1):
+  for i in range(1, iter+1):
     thi = thilist[0] + (thilist[1]-thilist[0])*i/float(iter)
     tlo = thi/3.0
     current = f(img, thi, tlo, sigma, clist, csearch=csearch, thin=thin)[0]
@@ -183,4 +188,3 @@ def sort_range(low, high):
     return [low, high]
   else:
     return [high, low]
-  

@@ -12,8 +12,15 @@
 #
 # Matlab Code:  http://cs.smith.edu/~nhowe/research/code/
 
-import argparse, cv, cv2, math, numpy, os, sys
-from scipy import signal, ndimage
+import argparse
+import math
+import os
+import sys
+
+import cv2
+import numpy
+from scipy import ndimage, signal
+
 import common
 
 version = '1.0'
@@ -54,7 +61,7 @@ def subtract_neighbor(image, offset):
 #                      https://github.com/rishimukherjee/Canny-Python
 def canny(image, thi=0.5, tlo=0.1, sigma=0.6):
   # Gaussian filter
-  smoothed = ndimage.filters.gaussian_filter(image, sigma)
+  smoothed = ndimage.gaussian_filter(image, sigma)
 
   # Sobel/Scharr convolution
   kernelx = numpy.asarray([[-3,0,3],
@@ -106,7 +113,7 @@ def canny(image, thi=0.5, tlo=0.1, sigma=0.6):
 def binarize_single(image, thi=0.5, tlo=0.1, sigma=0.6, clist=[100], csearch=True, thin=False):
   # Ensure image is grayscale
   if image.shape[2] == 3:
-    image = cv2.cvtColor(image, cv.CV_BGR2GRAY)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
   image = numpy.float_(image)
 
   # Compute Laplacian for source/sink weights
@@ -187,7 +194,7 @@ def main():
   parser.add_argument('input_file',
                       help='Path to input image file.')
   parser.add_argument('output_file',
-                      help='Path to output image file.')
+                      help='Path to output image file. Make sure you specified the file extension.')
   options = parser.parse_args()
   if not os.path.exists(options.input_file):
     sys.stderr.write('howe: File not found: ' + options.input_file)
