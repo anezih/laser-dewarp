@@ -7,7 +7,7 @@
 # and create a mask of the book without either background or hands.
 #
 
-import argparse, cv, cv2, numpy
+import argparse, cv2, numpy
 
 import handmodel, lasers
 
@@ -75,7 +75,7 @@ def make_background_mask(source, background, hand_mask):
   contourList = list(contours)
   contourList.sort(key = cv2.contourArea)
   result[:,:] = 255
-  cv2.drawContours(result, [contourList[-1]], 0, 0, thickness=cv.CV_FILLED)
+  cv2.drawContours(result, [contourList[-1]], 0, 0, thickness=cv2.cv.CV_FILLED)
   cv2.filter2D(result, -1, disk, result)
   return result
 

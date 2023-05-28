@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # A dewarping tool that rectifies a document based on analysis of lasers.
 
-import argparse, cv, cv2, math, numpy, os, re, sys
+import argparse, cv2, math, numpy, os, re, sys
 from scipy import stats, integrate, interpolate
 from numpy import polynomial
 import bookmask, handmodel, lasers
@@ -96,8 +96,8 @@ def warpModel(topLaser, bottomLaser, size, heightFactor=1.0, skew=0.0,
   offsetUnit = math.tan(skewRad)
   finalWidth = int(math.ceil(width))
   
-  map_x = numpy.asarray(cv.CreateMat(size[1], finalWidth, cv.CV_32FC1)[:,:])
-  map_y = numpy.asarray(cv.CreateMat(size[1], finalWidth, cv.CV_32FC1)[:,:])
+  map_x = numpy.asarray(cv2.cv.CreateMat(size[1], finalWidth, cv2.cv.CV_32FC1)[:,:])
+  map_y = numpy.asarray(cv2.cv.CreateMat(size[1], finalWidth, cv2.cv.CV_32FC1)[:,:])
 
   topX = A
   bottomX = D
@@ -194,7 +194,7 @@ def findSkew(laser, image, threshold=10):
         if val[1] < debugImage.shape[0]:
           debugImage[val[1], x] = (0, 255, 0)
     for y in xrange(debugImage.shape[0]):
-      debugImage[y, newSpine] = (255, 0, 255)
+      debugImage[int(y), int(newSpine)] = (255, 0, 255)
     cv2.imwrite('tmp/spine.png', debugImage)
   return (angle*180/math.pi + 90, newSpine)
 
@@ -255,10 +255,12 @@ def main():
   options = parser.parse_args()
   debug = options.debug
   if debug:
-    os.system('mkdir -p tmp')
+    if not os.path.exists("tmp"):
+      os.mkdir("tmp")
 
   checkPath('input_path', options.input_path)
-  os.system('mkdir -p ' + options.output_path)
+  if not os.path.exists(options.output_path):
+      os.mkdir(options.output_path)
   if os.path.isdir(options.input_path):
     basePath = options.input_path
     imageList = findImages(options.input_path)

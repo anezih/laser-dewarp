@@ -154,7 +154,7 @@ class Laser:
       left, right = bound
     image = cv2.merge((self.mask, self.mask, self.mask))
     for i in xrange(left, right):
-      image[self.curve[i], i] = (0, 0, 255)
+      image[int(self.curve[i]), i] = (0, 0, 255)
       if poly is not None:
         image[int(poly(i)), i] = (255, 255, 0)
     if knots is not None:

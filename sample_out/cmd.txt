@@ -1,0 +1,1 @@
+& C:\Python27\python.exe .\laser-dewarp.py ..\sample --upside-down --stretch-factor 3.5 --deskew
